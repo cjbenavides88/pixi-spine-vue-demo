@@ -11,11 +11,14 @@ const mix = require('laravel-mix');
  |
  */
 
+
 // webpack.mix.js
-mix.js("resources/js/app.js", "public/js")
+mix.js("resources/js/app.js", "public/js").vue()
     .postCss("resources/css/app.css", "public/css", [
         require("tailwindcss"),
+        require('autoprefixer'),
     ])
-    .copy('resources/assets/images', 'public/images')
+    .copy('resources/images', 'public/images')
+    .copy('resources/cgi', 'public/cgi')
     .version()
 ;
