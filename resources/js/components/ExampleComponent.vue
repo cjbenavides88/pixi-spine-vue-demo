@@ -1,9 +1,10 @@
 <template>
-    <div class="d-flex">
+    <div class="container">
         <div id="canvas"></div>
         <div >
             <select  v-if="animations.length > 0" @change="setAnimation(animations[$event.target.value])">
-                <option v-for="(animation,index) in animations" :value="index">[{{index}}]{{animation.name}}</option>
+                <option disabled selected>Animations</option>
+                <option v-for="(animation,index) in animations" :value="index">[{{index < 10 ? '0' + index : index}}] - {{animation.name}}</option>
             </select>
         </div>
     </div>
@@ -23,10 +24,10 @@
             initCanvas(char = 'kyaru', model = '106031'){
                 this.app = Object.seal(
                     new PIXI.Application({
-                        width: 800,         // default: 800
-                        height: 600,        // default: 600
+                        width: 350,         // default: 800
+                        height: 350,        // default: 600
                         antialias: true,    // default: false
-                        backgroundAlpha: 0.5, // default: false
+                        backgroundAlpha: 0, // default: false
                         resolution: 1       // default: 1
                     })
                 );
