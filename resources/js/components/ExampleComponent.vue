@@ -1,11 +1,23 @@
 <template>
-    <div class="container">
-        <div id="canvas"></div>
-        <div >
-            <select  v-if="animations.length > 0" @change="setAnimation(animations[$event.target.value])">
-                <option disabled selected>Animations</option>
-                <option v-for="(animation,index) in animations" :value="index">[{{index < 10 ? '0' + index : index}}] - {{animation.name}}</option>
-            </select>
+    <div class="container ">
+        <div class="wrapper p-4 flex flex-row w-full">
+            <div id="canvas" class="w-1/4"></div>
+            <div class="debug w-3/4">
+                <div >
+                    <select class="hidden" v-if="animations.length > 0" @change="setAnimation(animations[$event.target.value])" v-model="selectedAnimation">
+                        <option disabled :value="null">Animations</option>
+                        <option v-for="(animation,index) in animations" :value="index">[{{index < 10 ? '0' + index : index}}] - {{animation.name}}</option>
+                    </select>
+                </div>
+                <div class="animation-buttons-wrapper flex flex-row flex-wrap">
+                        <button  v-for="(animation,index) in animations" @click="setAnimation(animation)"
+                            class="btn w-1/6 mx-1 my-2">{{animation.name}}</button>
+
+                </div>
+                <div>
+                    {{animations[selectedAnimation] ? animations[selectedAnimation].name : ''}}
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -17,7 +29,8 @@
               app : null ,
               doll : null ,
               debug : true,
-              animations : []
+              animations : [],
+              selectedAnimation : null,
           }
         },
         methods : {
@@ -74,6 +87,9 @@
                 );
 
                 this.doll.autoUpdate = true;
+                //Setup Mixes
+                this.setMixes();
+                //Play Animation
                 this.setAnimation(this.animations[25])
                 this.app.start();
 
@@ -88,6 +104,20 @@
             },
             setAnimation(animation){
                 this.doll.state.setAnimation(0,animation.name,true);
+            },
+            setMixes(){
+                let mixes = [];
+                for(let i = 0; i < this.animations.length; i++){
+                    for(let j = 0; j < this.animations.length; j++){
+                        if(!(j === i)){
+                            this.doll.stateData.setMix(this.animations[i].name,this.animations[j].name, 0.1);
+                            mixes.push({
+                                from : this.animations[i].name,
+                                to : this.animations[j].name,
+                            });
+                        }
+                    }
+                }
             }
 
         },
