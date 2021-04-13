@@ -1,22 +1,25 @@
 <template>
-    <div class="container ">
+    <div class="container">
         <div class="wrapper p-4 flex flex-row w-full">
-            <div id="canvas" class="w-1/4"></div>
+            <div id="canvas" class="w-1/4">
+
+            </div>
             <div class="debug w-3/4">
-                <div >
-                    <select class="hidden" v-if="animations.length > 0" @change="setAnimation(animations[$event.target.value])" v-model="selectedAnimation">
-                        <option disabled :value="null">Animations</option>
-                        <option v-for="(animation,index) in animations" :value="index">[{{index < 10 ? '0' + index : index}}] - {{animation.name}}</option>
-                    </select>
+                <div class="w-100">
+                    <input type="text" v-if="selectedAnimation" :value="selectedAnimation.name" readonly>
                 </div>
                 <div class="animation-buttons-wrapper flex flex-row flex-wrap">
-                        <button  v-for="(animation,index) in animations" @click="setAnimation(animation)"
-                            class="btn w-1/6 mx-1 my-2">{{animation.name}}</button>
+                    <button  v-for="(animation,index) in animations" @click="setAnimation(animation)"
+                             class="btn w-1/6 mx-1 my-2">{{animation.name}}</button>
 
                 </div>
-                <div>
-                    {{animations[selectedAnimation] ? animations[selectedAnimation].name : ''}}
-                </div>
+
+            </div>
+        </div>
+        <div class="p-4 flex flex-row w-full">
+            <div class="w-1/2">
+                <button class="btn w-1/6 my-2" @click="celebration">Celebration</button>
+                <button class="btn w-1/6 my-2" @click="droppingBallon">Ballon</button>
             </div>
         </div>
     </div>
@@ -103,7 +106,11 @@
                 return Object.seal(spine.skeleton.data.animations);
             },
             setAnimation(animation){
+                this.selectedAnimation = Object.seal(animation);
                 this.doll.state.setAnimation(0,animation.name,true);
+            },
+            copyToClipBoard(text){
+
             },
             setMixes(){
                 let mixes = [];
@@ -111,18 +118,41 @@
                     for(let j = 0; j < this.animations.length; j++){
                         if(!(j === i)){
                             this.doll.stateData.setMix(this.animations[i].name,this.animations[j].name, 0.1);
-                            mixes.push({
-                                from : this.animations[i].name,
-                                to : this.animations[j].name,
-                            });
+                            if(this.debug){
+                                mixes.push({
+                                    from : this.animations[i].name,
+                                    to : this.animations[j].name,
+                                });
+                            }
                         }
                     }
                 }
-            }
+                if(this.debug){
+                    console.log(mixes);
+                }
+            },
+            //Animations Sequences
+            celebration(){
+                this.doll.state.setAnimation(0,'000000_mana_jump', false);
+                this.doll.state.addAnimation(0,'000000_mana_jump',false,0);
+                this.doll.state.addAnimation(0,'000000_mana_jump',false,0);
+                this.doll.state.addAnimation(0,'000000_dear_smile', false,0);
+                this.doll.state.addAnimation(0,'000000_dear_idol', true,0);
+            },
+            droppingBallon(){
+                this.doll.state.setAnimation(0, '000000_balloon_flying_down', false);
 
+                this.doll.state.addAnimation(0,'000000_balloon_in', false,0);
+                this.doll.state.addAnimation(0,'000000_mana_jump',false,0);
+                this.doll.state.addAnimation(0,'000000_mana_jump',false,0);
+                this.doll.state.addAnimation(0,'000000_mana_jump',false,0);
+                this.doll.state.addAnimation(0,'000000_dear_idol', false,0);
+                this.doll.state.addAnimation(0,'000000_balloon_out', false,0);
+                this.doll.state.addAnimation(0,'000000_balloon_flying_up', false,0);
+            }
         },
         mounted() {
-            // this.createCanvas();
+            //Init all
             this.initCanvas();
         }
     }
