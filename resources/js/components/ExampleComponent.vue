@@ -141,7 +141,6 @@
             },
             droppingBallon(){
                 this.doll.state.setAnimation(0, '000000_balloon_flying_down', false);
-
                 this.doll.state.addAnimation(0,'000000_balloon_in', false,0);
                 this.doll.state.addAnimation(0,'000000_mana_jump',false,0);
                 this.doll.state.addAnimation(0,'000000_mana_jump',false,0);
